@@ -1,61 +1,106 @@
-import React from "react";
-import { Space } from "antd";
+import React, { useEffect, useRef, useCallback } from "react";
 import { seatMap } from "../../components/seats";
 import { Seat } from "../../components/Seat";
+import { Seat as SeatInterface } from "../../interface/Interface";
+import { openNotification } from "../../components/Notifications";
+export const SelectSeats: React.FC<{
+  soldSeats: number[] | undefined;
+  setListSelectedSeats: React.Dispatch<React.SetStateAction<SeatInterface[]>>;
+}> = ({ soldSeats, setListSelectedSeats }) => {
+  const [selectedSeats, setSelectedSeats] = React.useState<SeatInterface[]>([]);
+  const myRef = useRef<HTMLDivElement>(null);
 
-export const SelectSeats = () => {
-  const status = (seatId: number) => {
-    // if (bookedSeats.includes(seatId)) return 2;
-    // if (bookingSeats.includes(seatId)) return 1;
-    return 0;
+  const status = (seat: SeatInterface) => {
+    if (soldSeats?.includes(seat.id)) return 2;
+    else if (selectedSeats.includes(seat)) return 1;
+    else return 0;
   };
+
+  React.useEffect(() => {
+    setListSelectedSeats(selectedSeats);
+  }, [selectedSeats]);
+
+  const pickSeat = useCallback(
+    (seat: SeatInterface) => {
+      if (soldSeats?.includes(seat.id)) return;
+
+      const index = selectedSeats.indexOf(seat);
+      if (index === -1) {
+        if (selectedSeats.length > 8)
+          openNotification("info", "Bạn có thể chọn tối đa 8 ghế!");
+        else setSelectedSeats([...selectedSeats, seat]);
+      } else {
+        selectedSeats.splice(index, 1);
+        setSelectedSeats([...selectedSeats]);
+      }
+    },
+    [selectedSeats]
+  );
+
+  useEffect(() => {
+    if (myRef.current) {
+      myRef.current.scrollLeft += 155;
+    }
+  }, []);
 
   return (
     <div>
-      <div>
-        <div className="w-full">
-          <img
-            alt=""
-            className="h-[100px] px-48"
-            src="https://www.cgv.vn/skin/frontend/cgv/default/images/bg-cgv/bg-screen.png"
-          />
+      <div className="overflow-x-scroll lg:overflow-x-hidden" ref={myRef}>
+        <div className="w-[1024px] lg:w-full flex justify-center items-center mb-7">
+          <p className="font-semibold text-center text-lg border bg-sky-200 rounded w-3/4 dark:text-black">
+            SCREEN
+          </p>
         </div>
-        <Space direction="vertical" align="center" className="w-full my-15">
-          <Space>
+        <div className="w-[1024px] lg:w-full flex flex-col justify-center items-center lg:space-y-1">
+          <div className="flex space-x-2 lg:space-x-3">
             {seatMap.firstRow.map((seat) => (
               <Seat
                 key={seat.id}
-                status={status(seat.id)}
                 seat={seat}
-                pickSeat={undefined}
+                status={status(seat)}
+                pickSeat={pickSeat}
               />
             ))}
-          </Space>
-          <Space direction="vertical">
+          </div>
+          <div className="lg:space-y-1">
             {seatMap.insideRows.map((insideRow, index) => (
-              <Space key={index}>
+              <div key={index} className="flex space-x-2 lg:space-x-3">
                 {insideRow?.map((seat) => (
                   <Seat
                     key={seat.id}
-                    status={status(seat.id)}
                     seat={seat}
-                    pickSeat={undefined}
+                    status={status(seat)}
+                    pickSeat={pickSeat}
                   />
                 ))}
-              </Space>
+              </div>
             ))}
-          </Space>
-          <Space>
+          </div>
+          <div className="flex space-x-2 lg:space-x-3">
             {seatMap.lastRow.map((seat) => (
               <Seat
                 key={seat.id}
-                status={status(seat.id)}
                 seat={seat}
-                pickSeat={undefined}
+                status={status(seat)}
+                pickSeat={pickSeat}
               />
             ))}
-          </Space>
-        </Space>
+          </div>
+
+          <div className="flex items-center font-medium space-x-2 lg:space-x-3 py-5">
+            <div className="h-8 w-8 bg-[#82bdf5] rounded"></div>
+            <p className="pr-5">Standard</p>
+
+            <div className="h-8 w-8 bg-[#f7adf2] rounded"></div>
+            <p className="pr-5">Sweetbox</p>
+
+            <div className="h-8 w-8 bg-[#f57373f5] rounded"></div>
+            <p className="pr-5">Selected</p>
+
+            <div className="h-8 w-8 bg-[#B8C4BF] rounded"></div>
+            <p>Unavailable</p>
+          </div>
+        </div>
       </div>
     </div>
   );
