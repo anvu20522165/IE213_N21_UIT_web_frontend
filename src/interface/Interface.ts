@@ -4,6 +4,7 @@ export interface Movie {
   director: string;
   actors: string;
   releaseDate: Date;
+  releaseDate: Date;
   genre: string[];
   duration: number;
   language: string;
@@ -11,10 +12,13 @@ export interface Movie {
   rated: string;
   trailer_url: string;
   id: string;
+  id: string;
 }
 
 export interface Province {
   name: string;
+  id: string;
+  cinemas: Cinema[];
   id: string;
   cinemas: Cinema[];
 }
@@ -24,10 +28,16 @@ export interface Cinema {
   address: string;
   address_url: URL;
   id: string;
+  id: string;
 }
 
 export interface ShowtimeDetails {
   name: string;
+  start: string;
+  end: string;
+  seats: string[];
+  id: string;
+  room: number;
   start: string;
   end: string;
   seats: string[];
@@ -44,6 +54,7 @@ export interface Showtime {
 }
 
 export interface Seat {
+  status: 0 | 1 | 2;
   status: 0 | 1 | 2;
   type: string;
   code: string;
