@@ -33,3 +33,4 @@ export const usePost = <T extends any>() => {
   };
   return { isLoading, isError, fetchPost, result };
 };
+

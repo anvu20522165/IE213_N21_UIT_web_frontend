@@ -100,3 +100,40 @@ export interface NewsOffer {
   objects: string[];
   others: string[];
 }
+export interface Food {
+  id: number;
+  image: string;
+  title: string;
+  contents: string[];
+  price: number;
+  quantity: number;
+}
+
+export interface Ticket {
+  _id: number;
+  foods: Food[];
+  seat: string;
+  seatPrice: number;
+  showtime: ShowtimeDetails;
+  user: User;
+  paymentMethod: string;
+  movieName: string;
+  cinemaName: string;
+  movieImage: string;
+  room: number;
+  time: string;
+  date: string;
+  totalTicket: number;
+  totalFood: number;
+  id: number;
+}
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  dayOfBirth: Date;
+  gender: string;
+}
