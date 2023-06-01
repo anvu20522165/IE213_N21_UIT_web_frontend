@@ -1,17 +1,17 @@
 import React from "react";
 
-export const usePost = <T extends any>() => {
+export const usePatch = <T extends any>() => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
   const [result, setResult] = React.useState<T | undefined>(undefined);
   const token = localStorage.getItem("token");
 
-  const fetchPost = async (object: any, path: string) => {
+  const fetchPatch = async (object: any, path: string) => {
     setIsLoading(true);
     setIsError(false);
     const url = import.meta.env.VITE_BACKEND_URL;
     const response = await fetch(url + path, {
-      method: "POST",
+      method: "PATCH",
       body: JSON.stringify(object),
       headers: {
         "Content-Type": "application/json",
@@ -31,6 +31,5 @@ export const usePost = <T extends any>() => {
     setResult(response);
     return response;
   };
-  return { isLoading, isError, fetchPost, result };
+  return { isLoading, isError, fetchPatch, result };
 };
-
